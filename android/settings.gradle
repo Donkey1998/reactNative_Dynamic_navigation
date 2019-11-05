@@ -1,0 +1,3 @@
+rootProject.name = 'reactNative_Dynamic_navigation'
+
+include ':app'
