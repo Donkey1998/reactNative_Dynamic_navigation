@@ -9,22 +9,55 @@ export default class PopularPage extends Component {
   constructor(props){
     super(props);
     console.disableYellowBox = true;
+    this.tabNames =['A','B','C','D','E','F','G','H'];
   }
-  _TabNavigator () {
-    return createMaterialTopTabNavigator({
-      PopularTab1: {
-        screen: PopularTab,
+
+  _getTabs(){
+    const tabs ={};
+    this.tabNames.forEach((item,index)=>{
+      tabs[`tab${index}`]={
+        // 往PopularTab界面传递数据
+        screen:props => <PopularTab {...props} tabLaber = {item}/>,
         navigationOptions:{
-          title: '最热',
-         }
-        },
-      PopularTab2: {
-        screen: PopularTab,
-        navigationOptions:{
-          title: '最热',
-          }
+          title: item
         }
-      });
+      }
+    })
+    return tabs;
+  }
+
+  // _TabNavigator () {
+  //   return createMaterialTopTabNavigator({
+  //     PopularTab1: {
+  //       screen: PopularTab,
+  //       navigationOptions:{
+  //         title: '最热',
+  //        }
+  //       },
+  //     PopularTab2: {
+  //       screen: PopularTab,
+  //       navigationOptions:{
+  //         title: '最热',
+  //         }
+  //       }
+  //     });
+  //   }
+
+  _TabNavigator () {
+    return createMaterialTopTabNavigator(
+      this._getTabs(),{
+        tabBarOptions:{
+          tabStyle:styles.tabStyle,
+          upperCaseLabel: false, //是否使标签大写 默认为true
+          scrollEnabled:true, //是否支持啊选项卡滚动 默认为 false
+          style:{
+            backgroundColor:'#678' //TabBar的背景色
+          },
+          indicatorStyle:styles.indicatorStyle, //标签指示器的样式
+          labelStyle:styles.labelStyle,//文字的样式
+        }
+      }
+      );
     }
 
     render() {
@@ -63,4 +96,15 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     margin: 10,
   },
+  tabStyle:{
+    minWidth:50,
+  },
+  indicatorStyle:{
+    height:2,
+    backgroundColor:'white',
+  },
+  indicatorStyle:{
+    fontSize:13,
+    marginTop:6,
+  }
 });

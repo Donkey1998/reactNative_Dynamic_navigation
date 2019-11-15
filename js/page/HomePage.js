@@ -11,7 +11,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Entypo from 'react-native-vector-icons/Entypo';
 import NavigationUtill from '../navigator/NavigationUtill';
-
+import  DynamicTabNavigator from '../navigator/DynamicTabNavigator';
 
 export default class HomePage extends Component {
   _tabNavigator(){
@@ -72,11 +72,16 @@ export default class HomePage extends Component {
     });
   }
   render() {
+  // 固定的底部的导航栏
+  //   //在NavigationUtill中创建一个变量navigation， 用于存储外部navigation
+  //   NavigationUtill.navigation = this.props.navigation;
+  //   // 在react navigation3.x中，导航器是不能直接暴露给react组件的，比如我的错误就是  https://blog.csdn.net/Cui_xing_tian/article/details/89493818
+  //  const Tab = createAppContainer(this._tabNavigator());
+  //  return <Tab/>
+
     //在NavigationUtill中创建一个变量navigation， 用于存储外部navigation
     NavigationUtill.navigation = this.props.navigation;
-    // 在react navigation3.x中，导航器是不能直接暴露给react组件的，比如我的错误就是  https://blog.csdn.net/Cui_xing_tian/article/details/89493818
-   const Tab = createAppContainer(this._tabNavigator());
-   return <Tab/>
+      return <DynamicTabNavigator/>
   }
 }
 
