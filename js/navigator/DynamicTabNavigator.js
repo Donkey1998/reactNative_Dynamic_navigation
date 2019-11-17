@@ -10,6 +10,7 @@ import {BottomTabBar, createBottomTabNavigator} from 'react-navigation-tabs';
 import {createAppContainer} from "react-navigation";
 import NavigationUtill from './NavigationUtill';
 import {Platform, StyleSheet, Text, View} from 'react-native';
+import {connect} from 'react-redux';
 
 const TABS = {//在这里配置页面的路由
     PopularPage: {
@@ -66,7 +67,7 @@ const TABS = {//在这里配置页面的路由
       },
 };
 
-export default class DynamicTabNavigator extends React.Component {
+class DynamicTabNavigator extends React.Component {
     constructor(props) {
         super(props);
         console.disableYellowBox = true;
@@ -78,12 +79,17 @@ export default class DynamicTabNavigator extends React.Component {
      * @private
      */
     _tabNavigator() {
+        if(this.Tabs) {
+            return this.Tabs;
+        }
         const {PopularPage, TrendingPage,FavoritePage} = TABS;//根据需要定制要显示的tab
         let tabs = {PopularPage, TrendingPage,FavoritePage}
         PopularPage.navigationOptions.tabBarLabel = '最棒';//动态修改Tab的属性
         
-        return createAppContainer(createBottomTabNavigator(tabs, {//应用修改后的tab
-            tabBarComponent: TabBarComponent,
+        return this.Tabs =  createAppContainer(createBottomTabNavigator(tabs, {//应用修改后的tab
+            tabBarComponent: props =>{
+                return<TabBarComponent theme={this.props.theme} {...props}/>
+            },
         }));
     }
 
@@ -123,11 +129,16 @@ class TabBarComponent extends React.Component {
         return (
             <BottomTabBar
                 {...this.props}
-                activeTintColor={this.theme.tintColor || this.props.activeTintColor}
+                activeTintColor={this.props.theme}
             />
         );
     }
 
 }
+const mapStateToProps = state => ({
+    theme: state.theme.theme,
+});
+
+export default connect(mapStateToProps)(DynamicTabNavigator);
 
 

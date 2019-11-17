@@ -3,8 +3,9 @@
 import React, {Component} from 'react';
 import {Platform, StyleSheet, Button, Text, View} from 'react-native';
 import NavigationUtill from '../navigator/NavigationUtill'
-
-export default class TrendingPage extends Component {
+import {connect} from 'react-redux'
+import actions from '../action/index'
+ class TrendingPage extends Component {
 
   render() {
     const {navigation} = this.props;
@@ -14,16 +15,22 @@ export default class TrendingPage extends Component {
         <Button
                 title="改变主题色"
                 onPress={() => {
-                    navigation.setParams({theme:{
-                        tintColor:'orange',
-                        updateTime:new Date().getTime()
-                    }})
+                   this.props.onThemeChange('#096');
                 }}
                 />
       </View>
     );
   }
 }
+const mapStateToProps = state => ({
+  
+});
+
+const mapDispatchToProps = dispatch => ({
+  onThemeChange: (theme) => dispatch(actions.onThemeChange(theme)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(TrendingPage);
 
 const styles = StyleSheet.create({
   container: {
