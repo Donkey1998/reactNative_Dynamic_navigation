@@ -78,7 +78,7 @@ class PopularTab extends Component {
     return (
       <View style={styles.container}>
         <Text style={styles.welcome}>{tabLaber}</Text>
-        <Text onPress = {() => {NavigationUtill.goPage({},'DetailPage')}}>跳转到详情页</Text>
+        <Text onPress = {() => {NavigationUtill.goPage({},'DataStoregeDemoPage')}}>跳转到详情页</Text>
       </View>
     );
   }
