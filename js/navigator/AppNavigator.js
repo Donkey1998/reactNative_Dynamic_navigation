@@ -2,6 +2,7 @@ import {createStackNavigator,createBottomTabNavigator,createMaterialTopTabNaviga
 import WelcomePage from '../page/WelcomePage';
 import HomePage from '../page/HomePage';
 import DetailPage from '../page/DetailPage';
+import DataStoregeDemoPage from '../page/DataStoregeDemoPage';
 import {connect} from 'react-redux';
 import {createReactNavigationReduxMiddleware, createReduxContainer} from 'react-navigation-redux-helpers';
 
@@ -25,6 +26,12 @@ const MainNavigator = createStackNavigator({
     },
     DetailPage:{
         screen: DetailPage,
+        navigationOptions:{
+            header:null,
+        }
+    },
+    DataStoregeDemoPage:{
+        screen: DataStoregeDemoPage,
         navigationOptions:{
             header:null,
         }
