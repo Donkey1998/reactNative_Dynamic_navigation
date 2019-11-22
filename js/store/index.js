@@ -6,6 +6,7 @@ import {middleware} from '../navigator/AppNavigator'
 // 中间件数组
 const middlewares = [
     middleware,
+    thunk,
 ];
 /** * 创建store */
 export default createStore(reducers, applyMiddleware(...middlewares));

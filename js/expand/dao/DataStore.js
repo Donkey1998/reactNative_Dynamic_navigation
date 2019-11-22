@@ -1,6 +1,6 @@
 import {AsyncStorage} from 'react-native';
 export const FLAG_STORAGE = {flag_popular: 'popular', flag_trending: 'trending'};
-const TIMEOUT_TIME = 3000;  //超时时间
+const TIMEOUT_TIME = 30000;  //超时时间
 export default class DataStore {
  /**
      * 获取数据，优先获取本地数据，如果无本地数据或本地数据过期则获取网络数据
@@ -8,18 +8,18 @@ export default class DataStore {
      * @param flag
      * @returns {Promise}
      */
-    fetchData(url, flag) {
+    fetchData(url, flag=FLAG_STORAGE.flag_popular) {
         return new Promise((resolve, reject) => {
             this.fetchLocalData(url).then((wrapData) => {  //获取本地数据
-                // if (wrapData && DataStore.checkTimestampValid(wrapData.timestamp)) {
-                //     resolve(wrapData);
-                // } else {
+                if (wrapData && DataStore.checkTimestampValid(wrapData.timestamp)) {
+                    resolve(wrapData);
+                } else {
                     this.fetchNetData(url, flag).then((data) => {
                         resolve(this._wrapData(data));
                     }).catch((error) => {
                         reject(error);
                     })
-                // }
+                }
 
             }).catch((error) => {
                 this.fetchNetData(url, flag).then((data) => {
@@ -85,8 +85,8 @@ export default class DataStore {
                 .then((responseData) => {
                 this.saveData(url, responseData)
                 resolve(responseData);
-                }).catch(error => { // fetch请求出错， 比如没网，请求超时
-
+                })
+                .catch(error => { // fetch请求出错， 比如没网，请求超时
                     console.log('error -->', error);
                   })     
             } else {
