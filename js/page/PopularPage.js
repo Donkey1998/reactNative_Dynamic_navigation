@@ -59,7 +59,7 @@ export default class PopularPage extends PureComponent {
           scrollEnabled:true, //是否支持啊选项卡滚动 默认为 false
           style:{
             backgroundColor:'#678',//TabBar的背景色
-            // height: 50//fix 开启scrollEnabled后再Android上初次加载时闪烁问题
+            height: 50//fix 开启scrollEnabled后再Android上初次加载时闪烁问题
           },
           indicatorStyle:styles.indicatorStyle, //标签指示器的样式
           labelStyle:styles.labelStyle,//文字的样式
@@ -201,12 +201,10 @@ const PopularTabPage = connect(mapStateToPorps,mapDispatchToProps)(PopularTab);
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
+    // 修复loding图标第一次加载闪一下就消失
   },
   tabStyle:{
-    minWidth: 50 ,//fix minWidth会导致tabStyle初次加载时闪烁
+   //fix minWidth会导致tabStyle初次加载时闪烁
     padding: 0
   },
   indicatorStyle:{
