@@ -1,8 +1,9 @@
 
 
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View} from 'react-native';
-import NavigationUtill from '../navigator/NavigationUtill'
+import {Platform, StyleSheet, Text, View, Button,} from 'react-native';
+import NavigationUtill from '../navigator/NavigationUtill';
+
 
 export default class MyPage extends Component {
   componentDidMount(){
@@ -21,6 +22,13 @@ export default class MyPage extends Component {
     return (
       <View style={styles.container}>
         <Text style={styles.welcome}>MyPage</Text>
+        <Button
+                title="跳转到RNMoudelPage"
+                onPress={() => {
+                  NavigationUtill.goPage({},'RNMoudelPage')
+                }}
+                />
+        
       </View>
     );
   }

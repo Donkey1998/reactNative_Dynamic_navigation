@@ -82,8 +82,8 @@ class DynamicTabNavigator extends React.Component {
         if(this.Tabs) {
             return this.Tabs;
         }
-        const {PopularPage, TrendingPage,FavoritePage} = TABS;//根据需要定制要显示的tab
-        let tabs = {PopularPage, TrendingPage,FavoritePage}
+        const {PopularPage, TrendingPage,FavoritePage, MyPage} = TABS;//根据需要定制要显示的tab
+        let tabs = {PopularPage, TrendingPage,FavoritePage,MyPage}
         PopularPage.navigationOptions.tabBarLabel = '最棒';//动态修改Tab的属性
         
         return this.Tabs =  createAppContainer(createBottomTabNavigator(tabs, {//应用修改后的tab
