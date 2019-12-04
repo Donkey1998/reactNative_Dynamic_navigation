@@ -1,19 +1,45 @@
 
 
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View,Button,DeviceEventEmitter} from 'react-native';
+import {Platform, StyleSheet, Text, View,Button,DeviceEventEmitter,StatusBar} from 'react-native';
 import { NativeModules } from 'react-native';
+import ButtonView from '../common/AndroidRCTButtonView';
+import {device} from '../../js/DeviceUtill'
 
 export default class RNMoudelPage extends Component {
+  constructor(props){
+    super(props);
+    
+  }
   componentDidMount(){
+    
+  
      //注册扫描监听
      DeviceEventEmitter.addListener('sendEventToRn', (value)=>{console.log('DeviceEventEmitter -->',value)});
      DeviceEventEmitter.addListener('sendThreadDeviceEvent', (value)=>{console.log('DeviceEventEmitter -->',value)});
   }
+
+  onButtonConfirm(data){
+    console.log("Android原生组件",data);
+  }
+
+  onButtonCancel(data){
+    console.log("Android原生组件",data);
+  }
+  
   render() {
     return (
       <View style={styles.container}>
-        <Text style={styles.welcome}>RNMoudelPage</Text>
+        <StatusBar hidden={false} barStyle={'dark-content'}/>
+        <View style={{ height: 40,backgroundColor:'red'}} >
+
+          <ButtonView
+              title="RN传到Android的数据"
+              style={{ height: 40}}
+              onButtonConfirm={event => this.onButtonConfirm(event.nativeEvent.data)}
+              onButtonCancel={event => this.onButtonCancel(event.nativeEvent.data)}
+              />   
+        </View>
         <Button 
                 title="调用原生toast"
                 onPress={() => {
@@ -67,6 +93,7 @@ export default class RNMoudelPage extends Component {
                   NativeModules.RNManagerModule.RNThreadDeviceEvent();
                 }}
                 />
+        
       </View>
     );
   }
@@ -75,14 +102,8 @@ export default class RNMoudelPage extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    width:device.width,
+    height:device.height,
     backgroundColor: '#F5FCFF',
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
   },
 });
