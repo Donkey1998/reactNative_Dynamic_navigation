@@ -4,6 +4,7 @@ import HomePage from '../page/HomePage';
 import DetailPage from '../page/DetailPage';
 import DataStoregeDemoPage from '../page/DataStoregeDemoPage';
 import RNMoudelPage from '../page/RNMoudelPage';
+import RNHooksPage from '../page/RNHooksPage'
 import {connect} from 'react-redux';
 import {createReactNavigationReduxMiddleware, createReduxContainer} from 'react-navigation-redux-helpers';
 
@@ -39,6 +40,12 @@ const MainNavigator = createStackNavigator({
     },
     DataStoregeDemoPage:{
         screen: DataStoregeDemoPage,
+        navigationOptions:{
+            header:null,
+        }
+    },
+    RNHooksPage:{
+        screen: RNHooksPage,
         navigationOptions:{
             header:null,
         }

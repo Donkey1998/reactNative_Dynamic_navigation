@@ -28,6 +28,12 @@ export default class MyPage extends Component {
                   NavigationUtill.goPage({},'RNMoudelPage')
                 }}
                 />
+        <Button
+                title="跳转到RNHooks"
+                onPress={() => {
+                  NavigationUtill.goPage({},'RNHooksPage')
+                }}
+                />
         
       </View>
     );
