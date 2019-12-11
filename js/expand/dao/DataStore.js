@@ -87,6 +87,7 @@ export default class DataStore {
                 resolve(responseData);
                 })
                 .catch(error => { // fetch请求出错， 比如没网，请求超时
+                    reject(error);
                     console.log('error -->', error);
                   })     
             } else {

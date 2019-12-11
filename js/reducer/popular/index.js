@@ -32,7 +32,7 @@ export default function onAction (state = initState, action ){
                     ...state,
                     [action.storeName]: {
                         ...state[action.storeName],
-                        isLoading: true,
+                        isLoading: false,
                     }
                 }
         case Types.POPULAR_LOAD_MORE_SUCCESS:
