@@ -1,5 +1,6 @@
 import {AsyncStorage} from 'react-native';
 export const FLAG_STORAGE = {flag_popular: 'popular', flag_trending: 'trending'};
+import Trending from 'GitHubTrending';
 const TIMEOUT_TIME = 30000;  //超时时间
 export default class DataStore {
  /**
