@@ -1,12 +1,14 @@
 
 
 import React, { PureComponent } from 'react';
-import {Platform, StyleSheet, ActivityIndicator,Text, View, FlatList, RefreshControl} from 'react-native';
+import {Platform, StyleSheet, ActivityIndicator,Text, View, FlatList, RefreshControl, TouchableOpacity} from 'react-native';
 import NavigationUtill from '../navigator/NavigationUtill';
 import {createMaterialTopTabNavigator,createAppContainer} from 'react-navigation';
 import {connect} from 'react-redux';
 import actions from '../action';
 import PopularItem from '../common/PopularItem';
+import NavigationBar from '../common/NavigationBar'
+import Ionicons from 'react-native-vector-icons/Ionicons'
 
 const URL = 'https://api.github.com/search/repositories?q=';
 const QUERY_STR = '&sort=stars';//搜索的排序规则 我们按照点赞量排序
@@ -69,11 +71,42 @@ export default class PopularPage extends PureComponent {
       );
     }
 
+    renderRightButton() {
+      const {theme} = this.props;
+      return <TouchableOpacity
+          onPress={() => {
+              // AnalyticsUtil.track("SearchButtonClick");
+              // NavigationUtil.goPage({theme}, 'SearchPage')
+          }}
+      >
+          <View style={{padding: 5, marginRight: 8}}>
+              <Ionicons
+                  name={'ios-search'}
+                  size={24}
+                  style={{
+                      marginRight: 8,
+                      alignSelf: 'center',
+                      color: 'white',
+                  }}/>
+          </View>
+      </TouchableOpacity>
+    }
+
     render() {
       const Tab = createAppContainer(this._TabNavigator());
-
+      let statusBar = {
+        backgroundColor: ThemeColor,
+        barStyle: 'light-content',
+        };
+      let navigationBar = <NavigationBar
+            title={'最热'}
+            statusBar={statusBar}
+            style={{backgroundColor: ThemeColor}}
+            rightButton={this.renderRightButton()}
+        />;
       return(
         <View style={{flex:1}}>
+           {navigationBar}
           <Tab/>
         </View>
       );
