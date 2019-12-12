@@ -2,7 +2,7 @@
 
 import React, {Component} from 'react';
 
-import {StyleSheet, ActivityIndicator,Text, View, FlatList, RefreshControl, TouchableOpacity} from 'react-native';
+import {StyleSheet, ActivityIndicator,Text, View, FlatList, RefreshControl, TouchableOpacity,DeviceEventEmitter} from 'react-native';
 import NavigationUtill from '../navigator/NavigationUtill';
 import {createMaterialTopTabNavigator,createAppContainer} from 'react-navigation';
 import {connect} from 'react-redux';
@@ -10,6 +10,9 @@ import actions from '../action';
 import TrendingItem from '../common/TrendingItem';
 import NavigationBar from '../common/NavigationBar'
 import Ionicons from 'react-native-vector-icons/Ionicons'
+import TrendingDialog from '../common/TrendingDialog'
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
+import eventTypes from '../eventTypes';
 
 const URL = 'https://github.com/trending/';
 const QUERY_STR = '&sort=stars';//搜索的排序规则 我们按照点赞量排序
@@ -20,6 +23,9 @@ const pageSize = 10;//设为常量，防止修改
     super(props);
     console.disableYellowBox = true;
     this.tabNames =['Python','Java','C','JavaScript'];
+    this.state={
+      timeSpan:'今天'
+    }
   }
 
   _getTabs(){
@@ -27,7 +33,7 @@ const pageSize = 10;//设为常量，防止修改
     this.tabNames.forEach((item,index)=>{
       tabs[`tab${index}`]={
         // 往TrendingTab界面传递数据
-        screen:props => <TrendingTabPage {...props} tabLabel = {item}/>,
+        screen:props => <TrendingTabPage {...props} timeSpan={this.state.timeSpan} tabLabel = {item}/>,
         navigationOptions:{
           title: item
         }
@@ -76,22 +82,55 @@ const pageSize = 10;//设为常量，防止修改
       </TouchableOpacity>
     }
 
-    render() {
+    renderTitleView() {
+      return <View>
+          <TouchableOpacity
+              underlayColor='transparent'
+              onPress={() => this.dialog.show()}>
+              <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                  <Text style={{
+                      fontSize: 18,
+                      color: '#FFFFFF',
+                      fontWeight: '400'
+                  }}>趋势 {this.state.timeSpan}</Text>
+                  <MaterialIcons
+                      name={'arrow-drop-down'}
+                      size={22}
+                      style={{color: 'white'}}
+                  />
+              </View>
+          </TouchableOpacity>
+      </View>
+  }
+
+  onSelectTimeSpan(tab){
+    this.dialog.dismiss()
+    console.log('选择的数据-->',tab);
+    this.setState({
+      timeSpan: tab
+    });
+    DeviceEventEmitter.emit(eventTypes.EVENT_TYPE_TIME_SPAN_CHANGE, tab);
+  }
+
+  render() {
       const Tab = createAppContainer(this._TabNavigator());
       let statusBar = {
         backgroundColor: ThemeColor,
         barStyle: 'light-content',
         };
-      let navigationBar = <NavigationBar
-            title={'趋势'}
-            statusBar={statusBar}
-            style={{backgroundColor: ThemeColor}}
-            rightButton={this.renderRightButton()}
-        />;
       return(
         <View style={{flex:1}}>
-           {navigationBar}
+          <NavigationBar
+          titleView={this.renderTitleView()}
+          statusBar={statusBar}
+          style={{backgroundColor: ThemeColor}}
+          rightButton={this.renderRightButton()}
+          />
           <Tab/>
+          <TrendingDialog
+            ref={dialog => this.dialog = dialog}
+            onSelect={tab => this.onSelectTimeSpan(tab)}
+          />
         </View>
       );  
     }
@@ -102,20 +141,32 @@ const pageSize = 10;//设为常量，防止修改
 class TrendingTab extends Component{
   constructor(props) {
     super(props);
-    const {tabLabel} = this.props;
+    const {tabLabel,timeSpan} = this.props;
     this.storeName = tabLabel;
+    this.timeSpan = timeSpan;
     
   }
 
   componentDidMount(){
     this.loadData();
+    this.listeners = [
+      DeviceEventEmitter.addListener(eventTypes.EVENT_TYPE_TIME_SPAN_CHANGE, (timeSpan) => {
+        this.timeSpan = timeSpan;
+        this.loadData();
+    })
+    ];
   }
 
+  componentWillUnmount(){
+    //移除监听
+    this.listeners && this.listeners.forEach(listener => listener.remove());
+  }
+  
   loadData(loadMore){
     const {onRefreshTrending, onLoadMoreTrending,} = this.props;
         const store = this._store();
         const url = this.genFetchUrl(this.storeName);
-        if (false) {
+        if (loadMore) {
             onLoadMoreTrending(this.storeName, ++store.pageIndex, pageSize, store.items,callback=>{
               console.log('没有更多了')
             })
@@ -143,7 +194,15 @@ class TrendingTab extends Component{
   }
   
   genFetchUrl(key) {
-    return URL + key;
+    let timeSpan;
+    if(this.timeSpan == '今天'){
+      timeSpan = '?since=daily';
+    }else if(this.timeSpan == '本周'){
+      timeSpan = '?since=weekly';
+    }else{
+      timeSpan = '?since=monthly';
+    }
+    return URL + key + timeSpan;
   }
 
   renderItem = ({index, item}) => {

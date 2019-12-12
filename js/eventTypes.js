@@ -1,0 +1,4 @@
+
+    export default {
+    EVENT_TYPE_TIME_SPAN_CHANGE : 'EVENT_TYPE_TIME_SPAN_CHANGE',
+}
