@@ -13,6 +13,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons'
 import TrendingDialog from '../common/TrendingDialog'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import eventTypes from '../eventTypes';
+import DataStore, {FLAG_STORAGE} from '../expand/dao/DataStore'
 
 const URL = 'https://github.com/trending/';
 const QUERY_STR = '&sort=stars';//搜索的排序规则 我们按照点赞量排序
@@ -210,7 +211,12 @@ class TrendingTab extends Component{
     return (
       <TrendingItem
         item = {item}
-        onSelect = {()=>{this.onSelect()}}
+        onSelect={(callback) => {
+          NavigationUtill.goPage({
+              projectModel: item,
+              callback,
+          }, 'DetailPage')
+      }}
       />
     );
   }

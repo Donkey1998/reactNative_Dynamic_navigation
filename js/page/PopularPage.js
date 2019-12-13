@@ -168,7 +168,12 @@ class PopularTab extends PureComponent {
     return (
       <PopularItem
         item = {item}
-        onSelect = {()=>{this.onSelect()}}
+        onSelect={(callback) => {
+          NavigationUtill.goPage({
+              projectModel: item,
+              callback,
+          }, 'DetailPage')
+      }}
       />
     );
   }
