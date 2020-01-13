@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
 import {Image, StyleSheet, Text, TouchableOpacity, View,} from 'react-native'
 import HTMLView from 'react-native-htmlview';
-
-export default class TrendingItem extends Component {
+import BaseItem from './BaseItem';
+export default class TrendingItem extends BaseItem {
     render() {
         const {item,onSelect} = this.props;
         if (!item) return null;
@@ -39,7 +39,7 @@ export default class TrendingItem extends Component {
                             })}
 
                         </View>
-                        {/* {this._favoriteIcon()} */}
+                        {this._favoriteIcon()}
                     </View>
                 </View>
 

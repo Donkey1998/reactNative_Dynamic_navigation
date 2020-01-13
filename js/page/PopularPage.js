@@ -7,13 +7,16 @@ import {createMaterialTopTabNavigator,createAppContainer} from 'react-navigation
 import {connect} from 'react-redux';
 import actions from '../action';
 import PopularItem from '../common/PopularItem';
-import NavigationBar from '../common/NavigationBar'
-import Ionicons from 'react-native-vector-icons/Ionicons'
+import NavigationBar from '../common/NavigationBar';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import FavoriteDao from '../expand/FavoriteDao';
+import {FLAG_STORAGE} from '../expand/dao/DataStore';
 
 const URL = 'https://api.github.com/search/repositories?q=';
 const QUERY_STR = '&sort=stars';//搜索的排序规则 我们按照点赞量排序
 const ThemeColor = 'red';
 const pageSize = 10;//设为常量，防止修改
+const favoriteDao = new FavoriteDao(FLAG_STORAGE.flag_popular);
 export default class PopularPage extends PureComponent {
   constructor(props){
     super(props);
@@ -110,8 +113,6 @@ export default class PopularPage extends PureComponent {
           <Tab/>
         </View>
       );
-      
-      
     }
 }
 
@@ -120,7 +121,15 @@ class PopularTab extends PureComponent {
     super(props);
     const {tabLabel} = this.props;
     this.storeName = tabLabel;
-    
+    this.favoriteAllkeys = [];
+    favoriteDao.getFavoriteKeys().then((result)=>{
+      if(result){
+        this.favoriteAllkeys = result
+        console.log('PopularTab所有收藏的key-->',result);
+      }
+    }).catch((e) => {
+        reject(e);
+    })
   }
   
   componentDidMount(){
@@ -173,9 +182,16 @@ class PopularTab extends PureComponent {
               projectModel: item,
               callback,
           }, 'DetailPage')
-      }}
+        }}
+        isFavorite={this.favoriteAllkeys.includes(item.name)}
+        onPressFavorite={(isFavorite,itemData)=>{this.onPressFavorite(isFavorite,itemData)}}
       />
     );
+  }
+
+  onPressFavorite(isFavorite,itemData){
+    // 更新数据库所有收藏项目的key值
+    favoriteDao.updateFavoriteKeys(isFavorite,itemData.name,itemData);
   }
 
   onSelect(){

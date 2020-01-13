@@ -1,8 +1,9 @@
 import React, {Component} from 'react';
 import {Image, StyleSheet, Text, TouchableOpacity, View,} from 'react-native'
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import BaseItem from './BaseItem';
 
-export default class PopularItem extends Component {
+export default class PopularItem extends BaseItem {
 
     render() {
         const {item,onSelect} = this.props;
@@ -21,6 +22,11 @@ export default class PopularItem extends Component {
                                    source={{uri: item.owner.avatar_url}}
                             />
                         </View>
+                        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                            <Text>Start:</Text>
+                            <Text>{item.stargazers_count}</Text>
+                        </View>
+                        {this._favoriteIcon()}
                    </View>
                </View>
             </TouchableOpacity>

@@ -13,12 +13,14 @@ import Ionicons from 'react-native-vector-icons/Ionicons'
 import TrendingDialog from '../common/TrendingDialog'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import eventTypes from '../eventTypes';
-import DataStore, {FLAG_STORAGE} from '../expand/dao/DataStore'
+import FavoriteDao from '../expand/FavoriteDao';
+import {FLAG_STORAGE} from '../expand/dao/DataStore';
 
 const URL = 'https://github.com/trending/';
 const QUERY_STR = '&sort=stars';//搜索的排序规则 我们按照点赞量排序
 const ThemeColor = 'red';
 const pageSize = 10;//设为常量，防止修改
+const favoriteDao = new FavoriteDao(FLAG_STORAGE.flag_trending);
  export default class TrendingPage extends Component {
   constructor(props){
     super(props);
@@ -145,7 +147,16 @@ class TrendingTab extends Component{
     const {tabLabel,timeSpan} = this.props;
     this.storeName = tabLabel;
     this.timeSpan = timeSpan;
-    
+    this.favoriteAllkeys = [];
+    // 
+    favoriteDao.getFavoriteKeys().then((result)=>{
+      if(result){
+        this.favoriteAllkeys = result
+        console.log('TrendingTab所有收藏的key-->',result);
+      }
+    }).catch((e) => {
+        reject(e);
+    })
   }
 
   componentDidMount(){
@@ -216,9 +227,16 @@ class TrendingTab extends Component{
               projectModel: item,
               callback,
           }, 'DetailPage')
-      }}
+        }}
+        isFavorite={this.favoriteAllkeys.includes(item.fullName)}
+        onPressFavorite={(isFavorite,itemData)=>{this.onPressFavorite(isFavorite,itemData)}}
       />
     );
+  }
+
+  onPressFavorite(isFavorite,itemData){
+    // 更新数据库所有收藏项目的key值
+    favoriteDao.updateFavoriteKeys(isFavorite,itemData.fullName,itemData);
   }
 
   onSelect(){
