@@ -15,6 +15,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import eventTypes from '../eventTypes';
 import FavoriteDao from '../expand/FavoriteDao';
 import {FLAG_STORAGE} from '../expand/dao/DataStore';
+import {device} from '../DeviceUtill';
 
 const URL = 'https://github.com/trending/';
 const QUERY_STR = '&sort=stars';//搜索的排序规则 我们按照点赞量排序
@@ -306,7 +307,8 @@ const styles = StyleSheet.create({
   },
   tabStyle:{
    //fix minWidth会导致tabStyle初次加载时闪烁
-    padding: 0
+    padding: 0,
+    width: device.width*0.33,
   },
   indicatorStyle:{
     height:2,

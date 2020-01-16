@@ -11,6 +11,7 @@ import NavigationBar from '../common/NavigationBar';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import FavoriteDao from '../expand/FavoriteDao';
 import {FLAG_STORAGE} from '../expand/dao/DataStore';
+import {device} from '../DeviceUtill';
 
 const URL = 'https://api.github.com/search/repositories?q=';
 const QUERY_STR = '&sort=stars';//搜索的排序规则 我们按照点赞量排序
@@ -259,7 +260,8 @@ const styles = StyleSheet.create({
   },
   tabStyle:{
    //fix minWidth会导致tabStyle初次加载时闪烁
-    padding: 0
+    padding: 0,
+    width: device.width*0.33,
   },
   indicatorStyle:{
     height:2,
