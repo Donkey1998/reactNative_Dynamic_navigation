@@ -96,10 +96,10 @@ export default class FavoriteDao {
                 let obj = {};
                 obj[key] = value;
                 console.log('所有收藏的项目-->7',obj);
-                let index = favoriteObject.indexOf(obj);
+                let index = favoriteObject.indexOf(value);
                 console.log('所有收藏的项目-->8',index);
                 if (isAdd) {//如果是添加且key不在存在则添加到数组中
-                    favoriteObject.push(obj);  
+                    favoriteObject.push(value);  
                 } else {//如果是删除且key存在则将其从数值中移除
                     favoriteObject.splice(index, 1);
                 }
