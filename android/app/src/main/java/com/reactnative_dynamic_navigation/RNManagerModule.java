@@ -1,25 +1,57 @@
 package com.reactnative_dynamic_navigation;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.facebook.react.bridge.ActivityEventListener;
+import com.facebook.react.bridge.Arguments;
+import com.facebook.react.bridge.BaseActivityEventListener;
 import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.ReadableMap;
+import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.facebook.react.uimanager.IllegalViewOperationException;
 
 public class RNManagerModule extends ReactContextBaseJavaModule {
     private Context mContext;
+    private static final int REQUEST_CODE = 1;
     public RNManagerModule(ReactApplicationContext reactContext) {
         super(reactContext);
         mContext = reactContext;
+        reactContext.addActivityEventListener(mActivityEventListener);
     }
+    private Callback mDoneCallback;
+    private Callback mCancelCallback;
+    private final ActivityEventListener mActivityEventListener = new BaseActivityEventListener() {
 
+        @Override
+        public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent intent) {
+            if (requestCode == REQUEST_CODE) {
+
+                if (mDoneCallback != null) {
+
+                    if (resultCode == Activity.RESULT_CANCELED) {
+                        mCancelCallback.invoke("取消");
+                    } else {
+                        WritableMap map = Arguments.createMap();
+                        map.putString("result", intent.getExtras().getString("result"));
+                        mDoneCallback.invoke(map);
+                    }
+
+                }
+
+                mCancelCallback = null;
+                mDoneCallback = null;
+            }
+        }
+    };
     @Override
     public String getName() {
         return "RNManagerModule";
@@ -100,6 +132,19 @@ public class RNManagerModule extends ReactContextBaseJavaModule {
         mContext.startActivity(intent);
     }
 
+//    RN跳转Activity并实现Activity回调
+    @ReactMethod
+    public void RNActivityResult(final ReadableMap map, final Callback onDone, final Callback onCancel){
+        String strData = map.hasKey("strData") ? map.getString("strData") : "0";
+        Log.e("RN传来的数据", strData);
+        Intent intent = new Intent(getCurrentActivity(), RnActivity.class);
+        mCancelCallback = onCancel;
+        mDoneCallback = onDone;
+        intent.putExtra("strData", strData);
+        getCurrentActivity().startActivityForResult(intent, REQUEST_CODE);
+    }
+
+
 //    RN用Promise机制与安卓原生代码通信
     @ReactMethod
     public void RNPromise(String msg, Promise promise){
@@ -118,6 +163,5 @@ public class RNManagerModule extends ReactContextBaseJavaModule {
             errorCallback.invoke("失败的回调");
         }
     }
-
 
 }

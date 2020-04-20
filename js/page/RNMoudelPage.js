@@ -53,6 +53,12 @@ export default class RNMoudelPage extends Component {
                 }}
                 />
         <Button 
+                title="RN获取Activity相关的回调"
+                onPress={() => {
+                  NativeModules.RNManagerModule.RNActivityResult({strData:'RN向Android传输的数据'},(onDone)=>{console.log('onDone-->',onDone.result)},(onCancel) => {console.log('onCancel-->',onCancel)});
+                }}
+                />
+        <Button 
                 title="RN用Promise机制调用安卓原生代码"
                 onPress={() => {
                   NativeModules.RNManagerModule.RNPromise('promise调用原生')
